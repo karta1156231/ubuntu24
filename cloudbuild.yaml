@@ -1,0 +1,26 @@
+substitutions:
+  _REGION: europe-west1
+  _PROJECT_ID: cienet-cmcs
+  _REPOSITORY: lucas-a3u  # Artifact Registry Repository ID
+  _IMAGE_NAME: my-test-packages-image
+  _IMAGE_TAG: latest
+
+timeout: '1200s'
+
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  id: build-image
+  args:
+    - 'build'
+    - '-t'
+    - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/${_IMAGE_NAME}:${_IMAGE_TAG}'
+    - '.' 
+
+- name: 'gcr.io/cloud-builders/docker'
+  id: push-image
+  args:
+    - 'push'
+    - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/${_IMAGE_NAME}:${_IMAGE_TAG}'
+
+images:
+  - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/${_IMAGE_NAME}:${_IMAGE_TAG}'
